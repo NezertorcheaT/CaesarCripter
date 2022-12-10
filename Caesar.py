@@ -1,7 +1,7 @@
 import string
 
 
-# это класс
+# это класс (вау)
 class CaesarCrypter:
     # метод задаия переменных
     def __init__(self):
@@ -13,9 +13,12 @@ class CaesarCrypter:
     # приватный статический метод шифрования 1 символа
     @staticmethod
     def __encrypt_symbol(s: str, alf: str, dist=3):
+        # вывод ошибки при не верной длинне символа
         if len(s) > 1 or len(s) == 0:
             raise ValueError('The entered character has length greater than 1 or equal to 0')
+        # нахождение символа в строке алфавита
         ii = (alf[0] + alf).find(s)
+        # сдвиг символа по алфавиту
         if ii != -1:
             return (alf[0] + alf)[ii + dist if ii + dist < len((alf[0] + alf)) else ii + dist - len((alf[0] + alf))]
         else:
@@ -24,6 +27,7 @@ class CaesarCrypter:
     # обезопасеный приватный статический метод шифрования 1 символа
     @staticmethod
     def __try_encrypt_symbol(s: str, alf: str, dist=3):
+        # Если вы ввели в s строку длинной более 1, он выберет только первый символ
         try:
             return CaesarCrypter.__encrypt_symbol(s, alf, dist=dist)
         except ValueError:
