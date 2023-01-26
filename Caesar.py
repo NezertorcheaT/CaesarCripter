@@ -1,62 +1,69 @@
+import os
 import string
 
 
-# это класс (вау)
 class CaesarCrypter:
-    # метод задаия переменных
     def __init__(self):
-        # русский алфавит маленький
-        self.abc_l = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
-        # русский алфавит большой
-        self.abc_b = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
+        self.alphabets: list[str] = ['абвгдеёжзийклмнопрстуфхцчшщъыьэюя', 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ',
+                                     string.ascii_lowercase, string.ascii_uppercase]
 
-    # приватный статический метод шифрования 1 символа
     @staticmethod
     def __encrypt_symbol(s: str, alf: str, dist=3):
-        # вывод ошибки при не верной длинне символа
         if len(s) > 1 or len(s) == 0:
             raise ValueError('The entered character has length greater than 1 or equal to 0')
-        # нахождение символа в строке алфавита
         ii = (alf[0] + alf).find(s)
-        # сдвиг символа по алфавиту
         if ii != -1:
             return (alf[0] + alf)[ii + dist if ii + dist < len((alf[0] + alf)) else ii + dist - len((alf[0] + alf))]
         else:
             return ''
 
-    # обезопасеный приватный статический метод шифрования 1 символа
     @staticmethod
     def __try_encrypt_symbol(s: str, alf: str, dist=3):
-        # Если вы ввели в s строку длинной более 1, он выберет только первый символ
         try:
             return CaesarCrypter.__encrypt_symbol(s, alf, dist=dist)
         except ValueError:
             return CaesarCrypter.__encrypt_symbol(s[0], alf, dist=dist)
 
-    # публичный статический метод шифрования строки
     @staticmethod
-    def encrypt(s: str, dist=3):
+    def encrypt(s: str, dist=3, alphabets: list[str] = None) -> str:
+        """
+        :param s: string to convert
+        :param dist: symbol shift distance
+        :param alphabets: list of alphabets, original alphabet is ['абвгдеёжзийклмнопрстуфхцчшщъыьэюя', 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+        :return: string
+        """
         s_end = ''
         for i in s:
-            if i in string.ascii_lowercase + string.ascii_uppercase + CaesarCrypter().abc_b + CaesarCrypter().abc_l:
-                s_end += CaesarCrypter.__encrypt_symbol(i, string.ascii_lowercase, dist=dist) + \
-                         CaesarCrypter.__encrypt_symbol(i, string.ascii_uppercase, dist=dist) + \
-                         CaesarCrypter.__encrypt_symbol(i, CaesarCrypter().abc_b, dist=dist) + \
-                         CaesarCrypter.__encrypt_symbol(i, CaesarCrypter().abc_l, dist=dist)
+            if alphabets is None:
+                print(CaesarCrypter().alphabets)
+                if i in ''.join(CaesarCrypter().alphabets):
+                    s_end += ''.join(
+                        list([CaesarCrypter.__encrypt_symbol(i, al, dist=dist) for al in CaesarCrypter().alphabets]))
+                else:
+                    s_end += i
             else:
-                s_end += i
+                if i in ''.join(alphabets):
+                    s_end += ''.join(
+                        list([CaesarCrypter.__encrypt_symbol(i, al, dist=dist) for al in alphabets]))
+                else:
+                    s_end += i
         return s_end
 
-    # публичный статический метод дешифрования строки
     @staticmethod
-    def decrypt(s: str, dist=3):
-        return CaesarCrypter.encrypt(s, dist=-dist)
+    def decrypt(s: str, dist=3, alphabets: list[str] = None) -> str:
+        """
+        :param s: string to convert
+        :param dist: symbol shift distance
+        :param alphabets: list of alphabets, original alphabet is ['абвгдеёжзийклмнопрстуфхцчшщъыьэюя', 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+        :return: string
+        """
+        return CaesarCrypter.encrypt(s, dist=-dist, alphabets=alphabets)
 
 
-# пример работы кода
+def cls():
+    os.system('cls||clear')
+
+
 if __name__ == '__main__':
-    s = input()
-    se = CaesarCrypter.encrypt(s)
-    print(se)
-    print(CaesarCrypter.decrypt(se))
-    input()
+    while True:
+        print((i := CaesarCrypter.encrypt(input())), CaesarCrypter.decrypt(i))
